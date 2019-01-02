@@ -16,7 +16,7 @@
         <div class="span1"><h4>Enable</h4></div>
     </div>
 
-    {% set events = ["PrintStarted", "PrintFailed", "PrintDone", "PrintCancelled", "MovieDone", "ClientOpened"] %}
+    {% set events = ["PrinterStateChanged", "MovieDone", "ClientOpened"] %}
     {% for event in events %}
 
     <div class="row-fluid">
@@ -29,4 +29,3 @@
     {% endfor %}
 
 </form>
-

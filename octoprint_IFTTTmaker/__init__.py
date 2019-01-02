@@ -22,7 +22,7 @@ class IFTTTMakerPlugin(octoprint.plugin.StartupPlugin,
         else:
 #            self.makerkey=''
             self._logger.info("No Maker key set while trying to save!")
-                    
+
     def on_after_startup(self):
         self._logger.info("IFTTT Maker Plugin Active")
 #        self.makerkey = self._settings.get(["makerkey"])
@@ -31,15 +31,12 @@ class IFTTTMakerPlugin(octoprint.plugin.StartupPlugin,
     def get_settings_defaults(self):
         return dict(makerkey="",
                     events=dict(
-                        PrintStarted=False,
-                        PrintFailed=False,
-                        PrintCancelled=False,
-                        PrintDone=False,
+                        PrinterStateChanged=False,
                         MovieDone=False,
                         ClientOpened=False)
                     )
-                
-            
+
+
     def get_template_configs(self):
         return [ dict(type="settings", name="IFTTTmaker", custom_bindings=False) ]
 
@@ -65,16 +62,18 @@ class IFTTTMakerPlugin(octoprint.plugin.StartupPlugin,
                 v3 = payload["position"]
             elif 'movie_basename' in payload:
                 v3 = payload["movie_basename"]
+            elif 'state_string' in payload:
+                v3 = payload["state_string"]
             self._send_ifttt("op-"+event, makerkey, v1, v2, v3)
         else:
             self._logger.info("Event skipped: %s" % event)
-          
-        
+
+
 #         == Events.PRINT_DONE:
 #            file = os.path.basename(payload["file"])
 #            elapsed_time_in_seconds = payload["time"]
 #            import datetime
-#            import octoprint.util    
+#            import octoprint.util
 #            elapsed_time = octoprint.util.get_formatted_timedelta(datetime.timedelta(seconds=elapsed_time_in_seconds))
 #            self._send_ifttt("op-PrintDone", file, elapsed_time)
 
@@ -87,7 +86,7 @@ class IFTTTMakerPlugin(octoprint.plugin.StartupPlugin,
         res = requests.post(url, json=payload)
         self._logger.info("URL: %s" % url)
         self._logger.info("Trigger: %s Response: %s Payload: %s" % (trigger, res.text, payload))
-        
+
 
     def get_update_information(self):
         return dict(
@@ -104,9 +103,9 @@ class IFTTTMakerPlugin(octoprint.plugin.StartupPlugin,
                 )
             )
 
-                                                                                            
+
 ######
-                        
+
 __plugin_name__ = "IFTTT Maker"
 __plugin_implementation__ = IFTTTMakerPlugin()
 
